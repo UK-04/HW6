@@ -1,7 +1,7 @@
 
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Usman Khan / COMP 272-002
  *
  *   This java file contains the problem solutions for the methods lastBoulder,
  *   showDuplicates, and pair methods. You should utilize the Java Collection
@@ -63,14 +63,33 @@ public class ProblemSolutions {
      * returning the 0 if queue is empty else return pq.peek().
      */
 
-  public static int lastBoulder(int[] boulders) {
-
+    public static int lastBoulder(int[] boulders) {
       //
       // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME / SECTION # ABOVE
-      //
-      return -1;
-  }
-
+      //   
+        // Create a max heap (priority queue in reverse order)
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> b - a);
+        
+        // Add all boulders to the priority queue
+        for (int boulder : boulders) {
+            pq.offer(boulder);
+        }
+        
+        // Continue smashing boulders while there are at least 2
+        while (pq.size() > 1) {
+            int heaviest = pq.poll();
+            int secondHeaviest = pq.poll();
+            
+            // If weights are different, add the difference back
+            if (heaviest != secondHeaviest) {
+                pq.offer(heaviest - secondHeaviest);
+            }
+            // If weights are equal, both are destroyed (nothing added back)
+        }
+        
+        // Return the last boulder's weight, or 0 if none remain
+        return pq.isEmpty() ? 0 : pq.peek();
+    }
 
     /**
      * Method showDuplicates
@@ -94,8 +113,18 @@ public class ProblemSolutions {
         //
         //  YOUR CODE GOES HERE
         //
-        return new ArrayList<>();  // Make sure result is sorted in ascending order
-
+        HashMap<String, Integer> map = new HashMap<>();
+        for (String str : input) {
+            map.put(str, map.getOrDefault(str, 0) + 1);
+        }
+        ArrayList<String> result = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if (entry.getValue() > 1) {
+                result.add(entry.getKey());
+            }
+        }
+        Collections.sort(result);
+        return result;
     }
 
 
@@ -134,6 +163,23 @@ public class ProblemSolutions {
         //
         //  YOUR CODE GOES HERE
         //
-        return new ArrayList<>();  // Make sure returned lists is sorted as indicated above
+        ArrayList<String> result = new ArrayList<>();
+        Set<Integer> seen = new HashSet<>();
+        Set<String> addedPairs = new HashSet<>();
+        for (int num : input) {
+            int complement = k - num;
+            if (seen.contains(complement)) {
+                int first = Math.min(num, complement);
+                int second = Math.max(num, complement);
+                String pair = "(" + first + ", " + second + ")";
+                if (!addedPairs.contains(pair)) {
+                    result.add(pair);
+                    addedPairs.add(pair);
+                }
+            }
+            seen.add(num);
+        }
+        Collections.sort(result);
+        return result;
     }
 }
